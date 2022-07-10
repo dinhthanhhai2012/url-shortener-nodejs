@@ -1,0 +1,81 @@
+@layout('master')
+
+@section('styles')
+<style>
+	.shorten-btn:hover {
+		background: #333333 !important;
+	}
+
+	.banner-title {
+		font-size: 4.5vw;
+		font-weight: lighter;
+		background: -webkit-linear-gradient(#26ed9f, #01a1f7);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	@media (max-width: 768px) {
+		.banner-title {
+			font-size: 8vw;
+			font-weight: lighter;
+			background: -webkit-linear-gradient(#26ed9f, #01a1f7);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+		}
+	}
+</style>
+@endsection
+
+@section('content')
+<div class="container-fluid">
+	<div class="p-4 text-center container">
+		<h1 class="p-4 banner-title">Let shorten your links here:</h1>
+	</div>
+
+	<div class="form-row p-2">
+		<div class="col-12 col-lg-6 col-md-6 offset-md-3 offset-lg-3">
+			<form method="post" action="{{ route('createShortLink') }}">
+				{{ csrfField() }}
+				<div class="input-group mb-3 shadow-sm">
+					<input name="long_url" type="url" class="form-control form-control-lg bg-light"
+						placeholder="Paste a link to be shortened" aria-label="Paste a link to be shortened" required>
+					<div class="input-group-append ">
+						<button type="submit" class="btn bg-blue-grey shorten-btn text-white px-4">Shorten</button>
+					</div>
+				</div>
+				<div class="custom-url">
+					<div class="custom-url--title">Custom URL (optional)</div>
+					<span class="custom-url--description text-muted d-block mb-2">
+					</span>
+					<div class="site-url">{{ config('app.url') }}/</div>
+					<input class="form-control form-control-sm url-field" id="custom_url_key" name="custom_url_key">
+					<small class="ml-3" id="link-availability-status"></small>
+				</div>
+			</form>
+
+			@if(flashMessage('error'))
+				<div class="alert bg-grey-100 text-danger mt-4 alert-dismissible fade show shadow-sm" role="alert">
+					{{ flashMessage('error') }}
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					  </button>
+				</div>
+			@endif
+		</div>
+
+	</div>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+	$(function() {
+		$.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN': "{{ csrfToken }}"
+			}
+		});
+	});
+</script>
+{{ script(mix('js/home.js')) }}
+@endsection
